@@ -3,7 +3,10 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
+  NotFoundException,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -11,6 +14,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { ProductsService } from '../../services/products/products.service';
+import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
 
 @Controller('products')
 export class ProductsController {
@@ -36,27 +40,36 @@ export class ProductsController {
   // ! las routas que no sean dinamicas deben ir primero
 
   @Get(':productId')
-  getProduct(@Res() res: Response, @Param('productId') productId: string) {
-    try {
-      const product = this.productsService.findOne(productId);
+  getProduct(@Param('productId') productId: string) {
+    return this.productsService.findOne(productId);
 
-      if (!product) {
-        return res.status(404).send({ message: 'product not found' });
-      }
+    // try {
+    //   const product = this.productsService.findOne(productId);
 
-      return res.send(product);
-    } catch (error) {
-      return res.status(500).send({ message: 'Internal Error' });
-    }
+    //   if (!product) {
+    //     // return res.status(404).send({ message: 'product not found' });
+    //     throw new NotFoundException('Product not Found');
+    //   }
+
+    //   // return res.send(product);
+    //   return product;
+    // } catch (error) {
+    //   // return res.status(500).send({ message: 'Internal Error' });
+    //   throw new InternalServerErrorException(error);
+    // }
   }
 
   @Post()
-  create(@Res() res: Response, @Body() payload: unknown) {
+  create(@Res() res: Response, @Body() payload: CreateProductDTO) {
     return res.send(this.productsService.create(payload));
   }
 
   @Put(':id')
-  update(@Body() payload: any, @Param('id') id: string, @Res() res: Response) {
+  update(
+    @Body() payload: UdpateProductDTO,
+    @Param('id') id: string,
+    @Res() res: Response,
+  ) {
     try {
       const product = this.productsService.update(id, payload);
 
