@@ -42,29 +42,22 @@ export class ProductsService {
   }
 
   update(id: string, product: UdpateProductDTO) {
-    let productToUdpate = this.findOne(id);
+    const productToUdpate = this.findOne(id);
 
-    if (!productToUdpate) {
-      return null;
-    }
-
-    productToUdpate = product as ProductEntity;
-
-    this.products = this.products.map((item) =>
-      item.id === id ? productToUdpate : item,
-    );
-
-    return productToUdpate;
+    const index = this.products.findIndex((item) => item.id === id);
+    this.products[index] = {
+      ...productToUdpate,
+      ...product,
+    };
+    return this.products[index];
   }
 
   delete(id: string) {
-    const productToDelete = this.findOne(id);
+    this.findOne(id);
 
-    if (!productToDelete) {
-      return null;
-    }
+    const index = this.products.findIndex((item) => item.id === id);
 
-    this.products = this.products.filter((item) => item.id !== id);
+    this.products.splice(index, 1);
     return true;
   }
 }

@@ -62,36 +62,12 @@ export class ProductsController {
   }
 
   @Put(':id')
-  update(
-    @Body() payload: UdpateProductDTO,
-    @Param('id') id: string,
-    @Res() res: Response,
-  ) {
-    try {
-      const product = this.productsService.update(id, payload);
-
-      if (!product) {
-        return res.status(404).send({ message: 'Product no fount' });
-      }
-
-      return res.send(product);
-    } catch (error) {
-      return res.status(500).send({ message: 'Internal Error' });
-    }
+  update(@Body() payload: UdpateProductDTO, @Param('id') id: string) {
+    return this.productsService.update(id, payload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @Res() res: Response) {
-    try {
-      const product = this.productsService.delete(id);
-
-      if (!product) {
-        return res.status(404).send({ message: 'Product no fount' });
-      }
-
-      res.send(product);
-    } catch (error) {
-      return res.status(500).send({ message: 'Internal Error' });
-    }
+  remove(@Param('id') id: string) {
+    return this.productsService.delete(id);
   }
 }

@@ -13,7 +13,6 @@ async function bootstrap() {
       // EVITAR ENVIAR MENSAGES AL CLIENTE
       // disableErrorMessages:
       //   process.env.ENVIROMENT === 'production' ? true : false,
-      disableErrorMessages: true,
     }),
   );
   await app.listen(3000);
