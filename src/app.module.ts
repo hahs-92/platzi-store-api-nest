@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
 import { environments } from './environments';
+import config from './config';
 
 // se necesita instalar por separado
 import { HttpModule, HttpService } from '@nestjs/axios';
@@ -30,6 +31,8 @@ const API_KEY = '788yhui';
       //para establecer variables
       //NODE_ENV=prod npm run start:dev
       envFilePath: environments[process.env.NODE_ENV] || '.env',
+      //le pasamos nuestra config, con la cual tenemos tipado para los env
+      load: [config],
       isGlobal: true,
     }),
     ProductsModule,
