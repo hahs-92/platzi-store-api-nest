@@ -10,14 +10,18 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+
 import { ProductsService } from '../../services/products/products.service';
 import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Get()
+  @ApiOperation({ summary: 'List of the products' })
   getProducts(
     @Res() res: Response,
     @Query('limit') limit = 20,

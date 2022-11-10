@@ -10,11 +10,16 @@ import {
   IsPositive,
 } from 'class-validator';
 
-import { PartialType } from '@nestjs/mapped-types';
+// import { PartialType } from '@nestjs/mapped-types';
+// PARA USAR SWAGGER SE DEBE UTILIZAR ESTE IMPORT
+import { PartialType, ApiProperty } from '@nestjs/swagger';
 
 // ESTAS DOS LIBRERIAS SE DEBEN DESCARGAR POR SEPARADO DE NEST
 
 export class CreateProductDTO {
+  @ApiProperty({
+    description: 'The name of the product',
+  })
   @IsString()
   @IsNotEmpty()
   readonly name: string;
