@@ -34,6 +34,9 @@ async function bootstrap() {
   // se debe borrar l carpeta dist cuando se agregan cambios
   // para swagger
 
+  //cors
+  app.enableCors();
+
   await app.listen(3000);
 }
 bootstrap();
