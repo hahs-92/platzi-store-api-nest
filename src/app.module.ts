@@ -1,4 +1,9 @@
 import { Module } from '@nestjs/common';
+
+// se necesita instalar por separado
+import { HttpModule, HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
@@ -10,9 +15,24 @@ import { SharedModule } from './shared/shared.module';
 const API_KEY = '788yhui';
 
 @Module({
-  imports: [ProductsModule, UsersModule, SharedModule],
+  imports: [HttpModule, ProductsModule, UsersModule, SharedModule],
   controllers: [AppController],
-  providers: [AppService, { provide: 'API_KEY', useValue: API_KEY }],
+  providers: [
+    AppService,
+    { provide: 'API_KEY', useValue: API_KEY },
+    {
+      provide: 'TASKS',
+      // no es recomendable llamar apis, solo se hizo por cuestiones de enseñanza
+      useFactory: async (http: HttpService) => {
+        const response = http.get(`https://jsonplaceholder.typicode.com/todos`);
+
+        const tasks = await firstValueFrom(response);
+
+        return tasks.data;
+      },
+      inject: [HttpService],
+    },
+  ],
   exports: [],
 })
 export class AppModule {}
