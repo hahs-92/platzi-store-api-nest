@@ -9,7 +9,7 @@ export class AppService {
   ) {}
 
   getHello(): string {
-    console.log('task: ', this.tasks);
+    console.log('task: ', this.tasks[0]);
     return `this is my ${this.apiKey}`;
   }
 }

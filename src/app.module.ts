@@ -9,13 +9,14 @@ import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
 import { UsersModule } from './users/users.module';
 import { SharedModule } from './shared/shared.module';
+import { DatabaseModule } from './database/database.module';
 
 // podemos compartir valores e injectarlos
 // este valor se injecta en app.service
 const API_KEY = '788yhui';
 
 @Module({
-  imports: [HttpModule, ProductsModule, UsersModule, SharedModule],
+  imports: [HttpModule, ProductsModule, UsersModule, SharedModule, DatabaseModule],
   controllers: [AppController],
   providers: [
     AppService,
@@ -23,6 +24,7 @@ const API_KEY = '788yhui';
     {
       provide: 'TASKS',
       // no es recomendable llamar apis, solo se hizo por cuestiones de enseñanza
+      // Use Factory es una fabrica de provider para resolver algo asincrona y recibiendo una injeccion
       useFactory: async (http: HttpService) => {
         const response = http.get(`https://jsonplaceholder.typicode.com/todos`);
 
