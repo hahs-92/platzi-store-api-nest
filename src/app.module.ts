@@ -1,5 +1,11 @@
 import { Module } from '@nestjs/common';
 
+//se instala por separado
+//nos permite manejar variables de entorno
+import { ConfigModule } from '@nestjs/config';
+
+import { environments } from './environments';
+
 // se necesita instalar por separado
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
@@ -16,7 +22,21 @@ import { DatabaseModule } from './database/database.module';
 const API_KEY = '788yhui';
 
 @Module({
-  imports: [HttpModule, ProductsModule, UsersModule, SharedModule, DatabaseModule],
+  imports: [
+    HttpModule,
+    ConfigModule.forRoot({
+      //lo usamos en userService y appservice
+      //archivo a leer
+      //para establecer variables
+      //NODE_ENV=prod npm run start:dev
+      envFilePath: environments[process.env.NODE_ENV] || '.env',
+      isGlobal: true,
+    }),
+    ProductsModule,
+    UsersModule,
+    SharedModule,
+    DatabaseModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
