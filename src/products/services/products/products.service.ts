@@ -1,9 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProductEntity } from '../../products/entities/product.entity';
-import {
-  CreateProductDTO,
-  UdpateProductDTO,
-} from '../../products/dtos/products.dto';
+import { ProductEntity } from '../../entities/product.entity';
+import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
 
 @Injectable()
 export class ProductsService {

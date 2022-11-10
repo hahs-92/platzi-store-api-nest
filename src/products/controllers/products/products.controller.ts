@@ -10,7 +10,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { ProductsService } from '../../../services/products/products.service';
+import { ProductsService } from '../../services/products/products.service';
 import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
 
 @Controller('products')

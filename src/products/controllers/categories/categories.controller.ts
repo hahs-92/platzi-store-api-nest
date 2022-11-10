@@ -10,7 +10,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { CategoriesService } from '../../../services/categories/categories.service';
+import { CategoriesService } from '../../services/categories/categories.service';
 import { CreateCategoryDto, UpdateCategoryDto } from '../../dtos/category.dto';
 
 @Controller('categories')
