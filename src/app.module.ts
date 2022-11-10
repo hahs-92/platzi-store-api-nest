@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 
+//lo debemos importar asi para que funcione
+import * as Joi from 'joi';
+
 //se instala por separado
 //nos permite manejar variables de entorno
 import { ConfigModule } from '@nestjs/config';
@@ -34,6 +37,13 @@ const API_KEY = '788yhui';
       //le pasamos nuestra config, con la cual tenemos tipado para los env
       load: [config],
       isGlobal: true,
+      //para validar nuestras env que si sean lo que necesitamos
+      // tambien podriamos usar class-validator
+      validationSchema: Joi.object({
+        API_KEY: Joi.number().required(),
+        DATABASE_NAME: Joi.string().required(),
+        PORT: Joi.number().required(),
+      }),
     }),
     ProductsModule,
     UsersModule,
