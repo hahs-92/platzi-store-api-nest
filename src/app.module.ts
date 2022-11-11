@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
 
-//driver coneccion con postgress
-import { Client } from 'pg';
-
 //lo debemos importar asi para que funcione
 import * as Joi from 'joi';
 
@@ -27,20 +24,6 @@ import { DatabaseModule } from './database/database.module';
 // podemos compartir valores e injectarlos
 // este valor se injecta en app.service
 const API_KEY = '788yhui';
-
-const client = new Client({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'platzi-store-nest',
-  password: 'TravelMate2420',
-  port: 5432,
-});
-
-client.connect();
-client.query('SELECT * FROM tasks', (err, res) => {
-  console.log(err);
-  console.log('RES: ', res.rows);
-});
 
 @Module({
   imports: [

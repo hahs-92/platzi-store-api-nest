@@ -1,6 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 
 import { ConfigService, ConfigType } from '@nestjs/config';
+import { resolve } from 'path';
+import { Client } from 'pg';
 
 import config from './config';
 
@@ -12,6 +14,7 @@ export class AppService {
     @Inject('TASKS') private tasks: any[],
     // private configService: ConfigService,
     @Inject(config.KEY) private configService: ConfigType<typeof config>,
+    @Inject('PG') private clientPG: Client,
   ) {}
 
   getHello(): string {
@@ -22,5 +25,20 @@ export class AppService {
 
     //de esta manera tenemos tipadas las env
     return `my api: ${this.configService.apiKey}`;
+  }
+
+  getTasks() {
+    return new Promise((resolve, reject) => {
+      this.clientPG.query('SELECT * FROM tasks', (err, res) => {
+        console.log(err);
+        console.log('RES: ', res.rows);
+
+        if (err) {
+          reject(err);
+        }
+
+        resolve(res.rows);
+      });
+    });
   }
 }
