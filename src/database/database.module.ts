@@ -41,7 +41,8 @@ const API_KEY = '788yhui';
           username: user,
           password,
           database: name,
-          synchronize: true, // solo en dev, para que nos cree las tablas
+          // false xq ahora creamos las tablas con migrations
+          synchronize: false, // solo en dev, para que nos cree las tablas
           autoLoadEntities: true, // busca las entities para que las pueda sincronizar
         };
       },
