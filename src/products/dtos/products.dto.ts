@@ -43,7 +43,4 @@ export class CreateProductDTO {
   readonly image?: string;
 }
 
-export class UdpateProductDTO extends PartialType(CreateProductDTO) {
-  @IsString()
-  id?: string;
-}
+export class UdpateProductDTO extends PartialType(CreateProductDTO) {}

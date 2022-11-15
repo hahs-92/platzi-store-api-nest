@@ -62,18 +62,20 @@ export class ProductsController {
     // }
   }
 
-  // @Post()
-  // create(@Res() res: Response, @Body() payload: CreateProductDTO) {
-  //   return res.send(this.productsService.create(payload));
-  // }
+  @Post()
+  create(@Body() payload: CreateProductDTO) {
+    // return res.send(this.productsService.create(payload));
+    // con @Res tendriamos que manejar el async
+    return this.productsService.create(payload);
+  }
 
-  // @Put(':id')
-  // update(@Body() payload: UdpateProductDTO, @Param('id') id: string) {
-  //   return this.productsService.update(id, payload);
-  // }
+  @Put(':id')
+  update(@Body() payload: UdpateProductDTO, @Param('id') id: string) {
+    return this.productsService.update(id, payload);
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.productsService.delete(id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.productsService.delete(id);
+  }
 }

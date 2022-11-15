@@ -29,9 +29,9 @@ export class ProductsService {
     return this.productRepo.find();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     // const product = this.products.find((product) => product.id === id);
-    const product = this.productRepo.findOneBy({ id });
+    const product = await this.productRepo.findOneBy({ id });
 
     if (!product) {
       // return null;
@@ -41,33 +41,38 @@ export class ProductsService {
     return product;
   }
 
-  // create(product: CreateProductDTO) {
-  //   const newProduct: ProductEntity = {
-  //     id: (++this.counter).toString(),
-  //     ...product,
-  //   };
+  create(product: CreateProductDTO) {
+    // const newProduct = new ProductEntity();
+    // newProduct.name = product.name;
+    // newProduct.price = product.price;
+    // newProduct.stock = product.stock;
+    // newProduct.description = product.description;
+    // newProduct.image = product.image;
 
-  //   this.products.push(newProduct);
-  //   return newProduct;
-  // }
+    // tipoorm nos ayuda a crear una instancia y asignar los
+    // valores, sin necesidad de hacer lo anterior
+    const newProduct = this.productRepo.create(product);
 
-  // update(id: string, product: UdpateProductDTO) {
-  //   const productToUdpate = this.findOne(id);
+    return this.productRepo.save(newProduct);
+  }
 
-  //   const index = this.products.findIndex((item) => item.id === id);
-  //   this.products[index] = {
-  //     ...productToUdpate,
-  //     ...product,
-  //   };
-  //   return this.products[index];
-  // }
+  async update(id: string, changes: UdpateProductDTO) {
+    const product = await this.productRepo.findOneBy({ id });
 
-  // delete(id: string) {
-  //   this.findOne(id);
+    if (!product) {
+      throw new NotFoundException('Product not Found');
+    }
 
-  //   const index = this.products.findIndex((item) => item.id === id);
+    this.productRepo.merge(product, changes);
+    return this.productRepo.save(product);
+  }
 
-  //   this.products.splice(index, 1);
-  //   return true;
-  // }
+  async delete(id: string) {
+    const product = await this.productRepo.findOneBy({ id });
+
+    if (!product) {
+      throw new NotFoundException('Product not Found');
+    }
+    return this.productRepo.delete(id);
+  }
 }
