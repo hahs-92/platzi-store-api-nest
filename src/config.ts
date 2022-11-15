@@ -10,5 +10,12 @@ export default registerAs('config', () => {
       password: process.env.DATABASE_PASSWORD,
     },
     apiKey: process.env.API_KEY,
+    typeorm: {
+      type: 'postgres',
+      host: process.env.TYPEORM_HOST,
+      port: parseInt(process.env.TYPEORM_PORT),
+      username: process.env.TYPEORM_USERNAME,
+      password: process.env.TYPEORM_PASSWORD,
+    },
   };
 });
