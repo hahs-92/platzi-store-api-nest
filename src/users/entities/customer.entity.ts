@@ -1,5 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToOne,
+} from 'typeorm';
 
+import { User } from './user.entity';
 @Entity({ name: 'customers' })
 export class Customer {
   @PrimaryGeneratedColumn()
@@ -13,4 +21,14 @@ export class Customer {
 
   @Column()
   phone: string;
+
+  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  createAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  updateAt: Date;
+
+  // referencia bidireccional
+  @OneToOne(() => User, (user) => user.customer)
+  user: User;
 }

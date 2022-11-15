@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Client } from 'pg';
 
 import { CreateUserDto, UpdateUserDto } from '../../dtos/user.dto';
 import { User } from '../../entities/user.entity';
@@ -27,6 +28,7 @@ export class UsersService {
     @InjectRepository(User) private userRepo: Repository<User>,
     private productsService: ProductsService,
     private configService: ConfigService,
+    @Inject('PG') private clientPg: Client,
   ) {}
 
   findAll() {
@@ -78,5 +80,17 @@ export class UsersService {
       user,
       products: await this.productsService.findAll(),
     };
+  }
+
+  // sin utilizar un orm, de manera nativa
+  getTasks() {
+    return new Promise((resolve, reject) => {
+      this.clientPg.query('SELECT * FROM tasks', (err, res) => {
+        if (err) {
+          reject(err);
+        }
+        resolve(res.rows);
+      });
+    });
   }
 }
