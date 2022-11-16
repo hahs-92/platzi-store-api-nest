@@ -41,6 +41,9 @@ export class CreateProductDTO {
   @IsOptional()
   @IsUrl()
   readonly image?: string;
+
+  @IsPositive()
+  readonly brandId: number;
 }
 
 export class UdpateProductDTO extends PartialType(CreateProductDTO) {}

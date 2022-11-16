@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { BrandsService } from '../brands/brands.service';
+
 import { ProductEntity } from '../../entities/product.entity';
 import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
 
@@ -22,16 +24,21 @@ export class ProductsService {
   constructor(
     @InjectRepository(ProductEntity)
     private productRepo: Repository<ProductEntity>,
+    private brandsService: BrandsService,
   ) {}
 
   findAll() {
     // return this.products;
-    return this.productRepo.find();
+    return this.productRepo.find({ relations: ['brand'] });
   }
 
   async findOne(id: string) {
     // const product = this.products.find((product) => product.id === id);
-    const product = await this.productRepo.findOneBy({ id });
+    // const product = await this.productRepo.findOneBy({ id });
+    const product = await this.productRepo.findOne({
+      where: { id },
+      relations: ['brand'],
+    });
 
     if (!product) {
       // return null;
@@ -41,7 +48,7 @@ export class ProductsService {
     return product;
   }
 
-  create(product: CreateProductDTO) {
+  async create(product: CreateProductDTO) {
     // const newProduct = new ProductEntity();
     // newProduct.name = product.name;
     // newProduct.price = product.price;
@@ -53,6 +60,11 @@ export class ProductsService {
     // valores, sin necesidad de hacer lo anterior
     const newProduct = this.productRepo.create(product);
 
+    if (product.brandId) {
+      const brand = await this.brandsService.findOne(product.brandId);
+      newProduct.brand = brand;
+    }
+
     return this.productRepo.save(newProduct);
   }
 
@@ -61,6 +73,12 @@ export class ProductsService {
 
     if (!product) {
       throw new NotFoundException('Product not Found');
+    }
+
+    // actualizar cuando hay relacion
+    if (changes.brandId) {
+      const brand = await this.brandsService.findOne(+id);
+      product.brand = brand;
     }
 
     this.productRepo.merge(product, changes);
