@@ -1,4 +1,3 @@
-import _default from '../../../dist/config';
 import {
   Entity,
   Column,
@@ -14,8 +13,6 @@ export class ProductEntity {
 
   @Column({ type: 'varchar', length: 255, unique: true })
   name: string;
-
-  @Column({ type: 'int' })
   price: number;
 
   @Column({ type: 'int' })

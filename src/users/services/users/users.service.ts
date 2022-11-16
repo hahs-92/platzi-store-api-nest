@@ -12,6 +12,8 @@ import { Order } from '../../entities/order.entity';
 //este servicio es de otro modulo
 import { ProductsService } from '../../../products/services/products/products.service';
 
+import { CustomersService } from '../customers/customers.service';
+
 @Injectable()
 export class UsersService {
   // private counterId = 1;
@@ -28,24 +30,36 @@ export class UsersService {
     @InjectRepository(User) private userRepo: Repository<User>,
     private productsService: ProductsService,
     private configService: ConfigService,
+    private customerService: CustomersService,
     @Inject('PG') private clientPg: Client,
   ) {}
 
   findAll() {
     // console.log('apiKey: ', this.configService.get('API_KEY'));
-    return this.userRepo.find();
+    return this.userRepo.find({
+      relations: ['customer'],
+    });
   }
 
   async findOne(id: number) {
-    const user = await this.userRepo.findOneBy({ id });
+    // const user = await this.userRepo.findOneBy({ id });
+    const user = await this.userRepo.findOne({
+      where: { id },
+      relations: ['customer'],
+    });
     if (!user) {
       throw new NotFoundException(`User #${id} not found`);
     }
     return user;
   }
 
-  create(data: CreateUserDto) {
+  async create(data: CreateUserDto) {
     const newUser = this.userRepo.create(data);
+
+    if (data.customerId) {
+      const customer = await this.customerService.findOne(data.customerId);
+      newUser.customer = customer;
+    }
 
     return this.userRepo.save(newUser);
   }
