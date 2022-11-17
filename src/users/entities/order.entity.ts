@@ -1,8 +1,32 @@
-import { User } from './user.entity';
-import { ProductEntity } from '../../products/entities/product.entity';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
+import { Customer } from './customer.entity';
+import { OrderItem } from './order-item.entity';
+@Entity({ name: 'orders' })
 export class Order {
-  date: Date;
-  user: User;
-  products: ProductEntity[];
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  createAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  updateAt: Date;
+
+  //una order solo pertenece a un cliente
+  @ManyToOne(() => Customer, (customer) => customer.orders)
+  customer: Customer;
+
+  // bidrieccional
+  // una orden tiene muchos items
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  items: OrderItem[];
 }

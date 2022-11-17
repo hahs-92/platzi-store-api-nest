@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 
 import { User } from './user.entity';
+import { Order } from './order.entity';
 @Entity({ name: 'customers' })
 export class Customer {
   @PrimaryGeneratedColumn()
@@ -31,4 +33,8 @@ export class Customer {
   // referencia bidireccional
   @OneToOne(() => User, (user) => user.customer)
   user: User;
+
+  // un cliente tiene muchas ordenes
+  @OneToMany(() => Order, (order) => order.customer)
+  orders: Order[];
 }
