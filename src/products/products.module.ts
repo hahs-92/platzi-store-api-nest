@@ -17,6 +17,6 @@ import { BrandsService } from './services/brands/brands.service';
   imports: [TypeOrmModule.forFeature([ProductEntity, Brand, Category])],
   controllers: [ProductsController, CategoriesController, BrandsController],
   providers: [ProductsService, CategoriesService, BrandsService],
-  exports: [ProductsService],
+  exports: [ProductsService, TypeOrmModule], // typeOrmModule es xq usamos la entidad de product en order-item
 })
 export class ProductsModule {}
