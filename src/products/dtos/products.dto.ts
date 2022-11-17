@@ -11,6 +11,7 @@ import {
   IsArray,
   ArrayNotEmpty,
   Min,
+  ValidateIf,
 } from 'class-validator';
 
 // import { PartialType } from '@nestjs/mapped-types';
@@ -63,6 +64,19 @@ export class FilterProductDto {
 
   @ApiProperty()
   @IsOptional()
-  @Min(0)
+  @IsPositive()
   readonly offset: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsPositive()
+  readonly minPrice: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsPositive()
+  // para asegurarnos de que si hay  un minPrice
+  // el maxPrice sea obligatorio
+  @ValidateIf((item) => item.minPrice)
+  readonly maxPrice: number;
 }

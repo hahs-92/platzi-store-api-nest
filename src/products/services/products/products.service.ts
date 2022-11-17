@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
+import { Between, FindOptionsWhere, In, Repository } from 'typeorm';
 
 import { BrandsService } from '../brands/brands.service';
 import { Category } from '../../entities/category.entity';
@@ -42,7 +42,15 @@ export class ProductsService {
     // return this.products;
 
     if (params) {
-      const { limit, offset } = params;
+      const { limit, offset, maxPrice, minPrice } = params;
+      const where: FindOptionsWhere<ProductEntity> = {};
+
+      // este filter no funciona xq no cree el campo price en la entidad
+      // ya se creo la migration
+      if (minPrice && maxPrice) {
+        where.price = Between(minPrice, maxPrice);
+      }
+
       return this.productRepo.find({
         relations: ['brand'],
         take: limit,
