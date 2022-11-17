@@ -10,6 +10,7 @@ import {
   IsPositive,
   IsArray,
   ArrayNotEmpty,
+  Min,
 } from 'class-validator';
 
 // import { PartialType } from '@nestjs/mapped-types';
@@ -53,3 +54,15 @@ export class CreateProductDTO {
 }
 
 export class UdpateProductDTO extends PartialType(CreateProductDTO) {}
+
+export class FilterProductDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsPositive()
+  readonly limit: number;
+
+  @ApiProperty()
+  @IsOptional()
+  @Min(0)
+  readonly offset: number;
+}

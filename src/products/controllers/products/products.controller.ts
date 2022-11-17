@@ -14,7 +14,11 @@ import { Response } from 'express';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { ProductsService } from '../../services/products/products.service';
-import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
+import {
+  CreateProductDTO,
+  UdpateProductDTO,
+  FilterProductDto,
+} from '../../dtos/products.dto';
 
 @ApiTags('products')
 @Controller('products')
@@ -25,20 +29,19 @@ export class ProductsController {
   @ApiOperation({ summary: 'List of the products' })
   getProducts(
     // @Res() res: Response,
-    @Query('limit') limit = 20,
-    @Query('offset') offset = 0,
-    @Query('brand') brand?: string,
+    // @Query('limit') limit = 20,
+    // @Query('offset') offset = 0,
+    // @Query('brand') brand?: string,
+    @Query() params: FilterProductDto,
   ) {
-    // return {
-    //   message: ` limit: ${limit} offset:  ${offset}`,
-    // };
-
     // res.send({
     //   // count: this.productsService.findAll().length,
     //   // result: this.productsService.findAll(),
     // });
 
-    return this.productsService.findAll();
+    // en el main habilitamos la option de transfomacion
+    // para que el limit y el offset sean numbers
+    return this.productsService.findAll(params);
   }
 
   // ! las routas que no sean dinamicas deben ir primero

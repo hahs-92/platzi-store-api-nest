@@ -6,7 +6,11 @@ import { BrandsService } from '../brands/brands.service';
 import { Category } from '../../entities/category.entity';
 
 import { ProductEntity } from '../../entities/product.entity';
-import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
+import {
+  CreateProductDTO,
+  UdpateProductDTO,
+  FilterProductDto,
+} from '../../dtos/products.dto';
 import { Brand } from '../../entities/brand.entity';
 
 @Injectable()
@@ -34,8 +38,18 @@ export class ProductsService {
     private ctgRepo: Repository<Category>,
   ) {}
 
-  findAll() {
+  findAll(params?: FilterProductDto) {
     // return this.products;
+
+    if (params) {
+      const { limit, offset } = params;
+      return this.productRepo.find({
+        relations: ['brand'],
+        take: limit,
+        skip: offset,
+      });
+    }
+
     return this.productRepo.find({ relations: ['brand'] });
   }
 

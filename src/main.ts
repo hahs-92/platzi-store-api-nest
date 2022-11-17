@@ -16,6 +16,14 @@ async function bootstrap() {
       // EVITAR ENVIAR MENSAGES AL CLIENTE
       // disableErrorMessages:
       //   process.env.ENVIROMENT === 'production' ? true : false,
+
+      transformOptions: {
+        // para habilitar la transformacion de los queries
+        // limit and offset, de string a number
+        // todos los queryparams que sean numeros los
+        // transforma todos los numeros a number
+        enableImplicitConversion: true,
+      },
     }),
   );
 
