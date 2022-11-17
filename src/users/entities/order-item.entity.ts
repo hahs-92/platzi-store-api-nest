@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   Column,
@@ -21,10 +22,20 @@ export class OrderItem {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @CreateDateColumn({name: 'create_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @Exclude() // nos permite no retornar este campo, debemos habilitar en main el classserializable
+  @CreateDateColumn({
+    name: 'create_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createAt: Date;
 
-  @UpdateDateColumn({name: 'update_at', type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @Exclude()
+  @UpdateDateColumn({
+    name: 'update_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updateAt: Date;
 
   // la cantidad de productos en la orden

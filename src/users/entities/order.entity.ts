@@ -8,6 +8,8 @@ import {
   OneToMany,
 } from 'typeorm';
 
+import { Exclude, Expose } from 'class-transformer';
+
 import { Customer } from './customer.entity';
 import { OrderItem } from './order-item.entity';
 @Entity({ name: 'orders' })
@@ -35,6 +37,36 @@ export class Order {
 
   // bidrieccional
   // una orden tiene muchos items
+  //@Exclude()
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   items: OrderItem[];
+
+  // TRANSFORMACIONES
+
+  // nos permite agregar valores extra (quantity)
+  // @Expose()
+  // get products() {
+  //   if (this.items) {
+  //     return this.items
+  //       .filter((item) => !!item)
+  //       .map((i) => ({
+  //         ...i.product,
+  //         quantity: i.quantity,
+  //         itemId: i.id
+  //       }));
+  //   }
+  // }
+
+  // agregamos el total
+  // @Expose()
+  // get total() {
+  //   if (this.items) {
+  //     return this.items
+  //       .filter((item) => !!item)
+  //       .reduce((acum, item) => {
+  //         const totalItem = item.product.price * item.quantity;
+  //         return acum + totalItem;
+  //       }, 0);
+  //   }
+  // }
 }

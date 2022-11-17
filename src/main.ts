@@ -1,6 +1,6 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 
 //documentation
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -44,6 +44,10 @@ async function bootstrap() {
 
   //cors
   app.enableCors();
+
+  //serializable
+  // https://docs.nestjs.com/techniques/serialization
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   await app.listen(3000);
 }
