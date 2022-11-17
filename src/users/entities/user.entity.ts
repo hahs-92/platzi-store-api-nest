@@ -23,10 +23,18 @@ export class User {
   @Column()
   role: string;
 
-  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    name: 'create_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn({
+    name: 'update_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updateAt: Date;
 
   // relacion 1 - 1 => esta es una referencia bidireccional
@@ -37,6 +45,6 @@ export class User {
 
   // user es quien maneja la relacion, asi que en users table
   // se crea un campo customer_id
-  @JoinColumn() // solo debe ir en una de las 2 entidades
+  @JoinColumn({ name: 'customer_id' }) // solo debe ir en una de las 2 entidades
   customer: Customer;
 }
