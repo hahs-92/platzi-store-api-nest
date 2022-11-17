@@ -8,6 +8,8 @@ import {
   IsNotEmpty,
   IsOptional,
   IsPositive,
+  IsArray,
+  ArrayNotEmpty,
 } from 'class-validator';
 
 // import { PartialType } from '@nestjs/mapped-types';
@@ -44,6 +46,10 @@ export class CreateProductDTO {
 
   @IsPositive()
   readonly brandId: number;
+
+  @IsArray()
+  @ArrayNotEmpty()
+  readonly categoriesIds: number[];
 }
 
 export class UdpateProductDTO extends PartialType(CreateProductDTO) {}

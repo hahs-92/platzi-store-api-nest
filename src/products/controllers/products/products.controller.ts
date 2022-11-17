@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -74,8 +75,24 @@ export class ProductsController {
     return this.productsService.update(id, payload);
   }
 
+  @Put(':id/category/:categoryId')
+  addCategory(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
+  ) {
+    return this.productsService.addCategoryToProduct(id, categoryId);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productsService.delete(id);
+  }
+
+  @Delete(':id/category/:categoryId')
+  deleteCategory(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
+  ) {
+    return this.productsService.removeCategoryByproduct(id, categoryId);
   }
 }

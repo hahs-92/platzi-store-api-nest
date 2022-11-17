@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import { BrandsService } from '../brands/brands.service';
+import { Category } from '../../entities/category.entity';
 
 import { ProductEntity } from '../../entities/product.entity';
 import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
+import { Brand } from '../../entities/brand.entity';
 
 @Injectable()
 export class ProductsService {
@@ -21,10 +23,15 @@ export class ProductsService {
   //   },
   // ];
 
+  // utilizamos el repo de brand, en vez de injectar el servico
+  // para evitar que nos triga las relaciones
   constructor(
     @InjectRepository(ProductEntity)
     private productRepo: Repository<ProductEntity>,
-    private brandsService: BrandsService,
+    // private brandsService: BrandsService,
+    @InjectRepository(Brand) private brandRepo: Repository<Brand>,
+    @InjectRepository(Category)
+    private ctgRepo: Repository<Category>,
   ) {}
 
   findAll() {
@@ -37,7 +44,7 @@ export class ProductsService {
     // const product = await this.productRepo.findOneBy({ id });
     const product = await this.productRepo.findOne({
       where: { id },
-      relations: ['brand'],
+      relations: ['brand', 'categories'],
     });
 
     if (!product) {
@@ -61,8 +68,16 @@ export class ProductsService {
     const newProduct = this.productRepo.create(product);
 
     if (product.brandId) {
-      const brand = await this.brandsService.findOne(product.brandId);
+      const brand = await this.brandRepo.findOneBy({ id: product.brandId });
       newProduct.brand = brand;
+    }
+
+    if (product.categoriesIds) {
+      const categories = await this.ctgRepo.findBy({
+        id: In(product.categoriesIds),
+      });
+
+      newProduct.categories = categories;
     }
 
     return this.productRepo.save(newProduct);
@@ -77,11 +92,50 @@ export class ProductsService {
 
     // actualizar cuando hay relacion
     if (changes.brandId) {
-      const brand = await this.brandsService.findOne(+id);
+      const brand = await this.brandRepo.findOneBy({ id: +id });
       product.brand = brand;
     }
 
+    if (changes.categoriesIds) {
+      const categories = await this.ctgRepo.findBy({
+        id: In(changes.categoriesIds),
+      });
+
+      product.categories = categories;
+    }
+
     this.productRepo.merge(product, changes);
+    return this.productRepo.save(product);
+  }
+
+  async removeCategoryByproduct(productId: number, categoryId: number) {
+    const product = await this.productRepo.findOne({
+      where: { id: productId.toString() },
+      // necesitamos la relacion para acceder a categories
+      relations: ['categories'],
+    });
+
+    product.categories = product.categories.filter(
+      (ctg) => ctg.id !== categoryId,
+    );
+
+    return this.productRepo.save(product);
+  }
+
+  async addCategoryToProduct(productId: number, categoryId: number) {
+    const product = await this.productRepo.findOne({
+      where: { id: productId.toString() },
+      // necesitamos la relacion para acceder a categories
+      relations: ['categories'],
+    });
+
+    const category = await this.ctgRepo.findOne({ where: { id: categoryId } });
+
+    // faltaria validar que no este la ctg ya agregada
+    if (category) {
+      product.categories.push(category);
+    }
+
     return this.productRepo.save(product);
   }
 
