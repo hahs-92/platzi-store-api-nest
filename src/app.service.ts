@@ -1,4 +1,5 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, Get } from '@nestjs/common';
+import { Db } from 'mongodb';
 
 import { ConfigService, ConfigType } from '@nestjs/config';
 
@@ -10,6 +11,7 @@ export class AppService {
   constructor(
     @Inject('API_KEY') private apiKey: string,
     @Inject('TASKS') private tasks: any[],
+    @Inject('MONGO') private database: Db,
     // private configService: ConfigService,
     @Inject(config.KEY) private configService: ConfigType<typeof config>,
   ) {}
@@ -23,4 +25,6 @@ export class AppService {
     //de esta manera tenemos tipadas las env
     return `my api: ${this.configService.apiKey}`;
   }
+
+  getTask() {}
 }
