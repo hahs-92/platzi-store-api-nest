@@ -1,5 +1,8 @@
 import { Module, Global } from '@nestjs/common';
 import { MongoClient, ServerApiVersion } from 'mongodb';
+import { ConfigType } from '@nestjs/config';
+
+import config from '../config';
 
 const API_KEY = '788yhui';
 
@@ -30,9 +33,11 @@ const API_KEY = '788yhui';
       // REALIZAMOS LA CONNECION
       // USANDO EL DRIVE NATIVO DE MONGO
       provide: 'MONGO',
-      useFactory: async () => {
-        const uri =
-          'mongodb+srv://hahs:XwgjTEmflrYKPYPO@cluster0.uxguvsc.mongodb.net/?retryWrites=true&w=majority';
+      useFactory: async (configService: ConfigType<typeof config>) => {
+        const {
+          mongo: { dbName, uri },
+        } = configService;
+
         const options = {
           useNewUrlParser: true,
           useUnifiedTopology: true,
@@ -41,7 +46,11 @@ const API_KEY = '788yhui';
 
         const client = new MongoClient(uri, options);
         await client.connect();
+
+        const database = client.db(dbName);
+        return database;
       },
+      inject: [config.KEY],
     },
   ],
   exports: ['API_KEY', 'MONGO'], // Le indicamos que se puede utilizar en cualquier otro modulo
