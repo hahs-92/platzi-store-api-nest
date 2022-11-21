@@ -12,6 +12,7 @@ import {
 import { Response } from 'express';
 import { CategoriesService } from '../../services/categories/categories.service';
 import { CreateCategoryDto, UpdateCategoryDto } from '../../dtos/category.dto';
+import { MongoIdPipe } from '../../../shared/mongo-id/mongo-id.pipe';
 
 @Controller('categories')
 export class CategoriesController {
@@ -23,7 +24,7 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  get(@Param('id') id: string) {
+  get(@Param('id', MongoIdPipe) id: string) {
     return this.categoriesService.findOne(id);
   }
 
@@ -34,14 +35,14 @@ export class CategoriesController {
 
   @Put(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', MongoIdPipe) id: string,
     @Body() payload: UpdateCategoryDto,
   ) {
     return this.categoriesService.update(id, payload);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.categoriesService.remove(+id);
+  remove(@Param('id', MongoIdPipe) id: string) {
+    return this.categoriesService.remove(id);
   }
 }

@@ -14,6 +14,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { ProductsService } from '../../services/products/products.service';
 import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
+import { MongoIdPipe } from '../../../shared/mongo-id/mongo-id.pipe';
 
 @ApiTags('products')
 @Controller('products')
@@ -33,7 +34,7 @@ export class ProductsController {
   // ! las routas que no sean dinamicas deben ir primero
 
   @Get(':productId')
-  getProduct(@Param('productId') productId: string) {
+  getProduct(@Param('productId', MongoIdPipe) productId: string) {
     return this.productsService.findOne(productId);
   }
 
@@ -43,12 +44,15 @@ export class ProductsController {
   }
 
   @Put(':id')
-  update(@Body() payload: UdpateProductDTO, @Param('id') id: string) {
+  update(
+    @Body() payload: UdpateProductDTO,
+    @Param('id', MongoIdPipe) id: string,
+  ) {
     return this.productsService.update(id, payload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', MongoIdPipe) id: string) {
     return this.productsService.delete(id);
   }
 }

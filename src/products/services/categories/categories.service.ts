@@ -28,11 +28,11 @@ export class CategoriesService {
     return;
   }
 
-  update(id: number, changes: UpdateCategoryDto) {
+  update(id: string, changes: UpdateCategoryDto) {
     return;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return true;
   }
 }

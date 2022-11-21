@@ -25,11 +25,11 @@ export class BrandsService {
     return;
   }
 
-  update(id: number, changes: UpdateBrandDto) {
+  update(id: string, changes: UpdateBrandDto) {
     return;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return true;
   }
 }
