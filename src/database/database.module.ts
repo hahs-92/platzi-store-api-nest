@@ -2,6 +2,8 @@ import { Module, Global } from '@nestjs/common';
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import { ConfigType } from '@nestjs/config';
 
+import { MongooseModule } from '@nestjs/mongoose';
+
 import config from '../config';
 
 const API_KEY = '788yhui';
@@ -27,6 +29,26 @@ const API_KEY = '788yhui';
 
 @Global() // le indicamos que todo lo que este en este modulo es para uso global
 @Module({
+  // REALIZANDO LA CONNECION
+  // USANDO MONGOOSE
+  imports: [
+    // SIN USAR ENVS
+    // MongooseModule.forRoot('', { dbName: '' })
+    // USANDO ENVS E INJECCION DE DEPENDENCIAS
+    MongooseModule.forRootAsync({
+      useFactory: async (configService: ConfigType<typeof config>) => {
+        const {
+          mongo: { dbName, uri },
+        } = configService;
+
+        return {
+          uri,
+          dbName,
+        };
+      },
+      inject: [config.KEY],
+    }),
+  ],
   providers: [
     { provide: 'API_KEY', useValue: API_KEY },
     {
@@ -34,9 +56,7 @@ const API_KEY = '788yhui';
       // USANDO EL DRIVE NATIVO DE MONGO
       provide: 'MONGO',
       useFactory: async (configService: ConfigType<typeof config>) => {
-        const {
-          mongo: { dbName, uri },
-        } = configService;
+        const { dbName, uri } = configService.mongo;
 
         const options = {
           useNewUrlParser: true,
@@ -53,7 +73,7 @@ const API_KEY = '788yhui';
       inject: [config.KEY],
     },
   ],
-  exports: ['API_KEY', 'MONGO'], // Le indicamos que se puede utilizar en cualquier otro modulo
+  exports: ['API_KEY', 'MONGO', MongooseModule], // Le indicamos que se puede utilizar en cualquier otro modulo
 })
 export class DatabaseModule {}
 
