@@ -1,23 +1,23 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+
 import { CreateCategoryDto, UpdateCategoryDto } from '../../dtos/category.dto';
 import { Category } from '../../entities/category.entity';
 
 @Injectable()
 export class CategoriesService {
-  private counterId = 1;
-  private categories: Category[] = [
-    {
-      id: 1,
-      name: 'Category 1',
-    },
-  ];
+  constructor(
+    @InjectModel(Category.name) private ctgServices: Model<Category>,
+  ) {}
 
   findAll() {
-    return this.categories;
+    return this.ctgServices.find().exec();
   }
 
-  findOne(id: number) {
-    const category = this.categories.find((item) => item.id === id);
+  async findOne(id: string) {
+    const category = await this.ctgServices.findById(id).exec();
     if (!category) {
       throw new NotFoundException(`Category #${id} not found`);
     }
@@ -25,31 +25,14 @@ export class CategoriesService {
   }
 
   create(data: CreateCategoryDto) {
-    this.counterId = this.counterId + 1;
-    const newCategory = {
-      id: this.counterId,
-      ...data,
-    };
-    this.categories.push(newCategory);
-    return newCategory;
+    return;
   }
 
   update(id: number, changes: UpdateCategoryDto) {
-    const category = this.findOne(id);
-    const index = this.categories.findIndex((item) => item.id === id);
-    this.categories[index] = {
-      ...category,
-      ...changes,
-    };
-    return this.categories[index];
+    return;
   }
 
   remove(id: number) {
-    const index = this.categories.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`Category #${id} not found`);
-    }
-    this.categories.splice(index, 1);
     return true;
   }
 }

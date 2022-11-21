@@ -23,19 +23,11 @@ export class ProductsController {
   @Get()
   @ApiOperation({ summary: 'List of the products' })
   getProducts(
-    @Res() res: Response,
     @Query('limit') limit = 20,
     @Query('offset') offset = 0,
     @Query('brand') brand?: string,
   ) {
-    // return {
-    //   message: ` limit: ${limit} offset:  ${offset}`,
-    // };
-
-    res.send({
-      count: this.productsService.findAll().length,
-      result: this.productsService.findAll(),
-    });
+    return this.productsService.findAll();
   }
 
   // ! las routas que no sean dinamicas deben ir primero
@@ -43,21 +35,6 @@ export class ProductsController {
   @Get(':productId')
   getProduct(@Param('productId') productId: string) {
     return this.productsService.findOne(productId);
-
-    // try {
-    //   const product = this.productsService.findOne(productId);
-
-    //   if (!product) {
-    //     // return res.status(404).send({ message: 'product not found' });
-    //     throw new NotFoundException('Product not Found');
-    //   }
-
-    //   // return res.send(product);
-    //   return product;
-    // } catch (error) {
-    //   // return res.status(500).send({ message: 'Internal Error' });
-    //   throw new InternalServerErrorException(error);
-    // }
   }
 
   @Post()

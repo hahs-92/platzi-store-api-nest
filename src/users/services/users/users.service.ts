@@ -8,31 +8,24 @@ import { Order } from '../../entities/order.entity';
 
 //este servicio es de otro modulo
 import { ProductsService } from '../../../products/services/products/products.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UsersService {
-  private counterId = 1;
-  private users: User[] = [
-    {
-      id: 1,
-      email: 'correo@mail.com',
-      password: '12345',
-      role: 'admin',
-    },
-  ];
-
   constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
     private productsService: ProductsService,
     private configService: ConfigService,
   ) {}
 
   findAll() {
-    console.log('apiKey: ', this.configService.get('API_KEY'));
-    return this.users;
+    //console.log('apiKey: ', this.configService.get('API_KEY'));
+    return this.userModel.find().exec();
   }
 
-  findOne(id: number) {
-    const user = this.users.find((item) => item.id === id);
+  async findOne(id: string) {
+    const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException(`User #${id} not found`);
     }
@@ -40,41 +33,22 @@ export class UsersService {
   }
 
   create(data: CreateUserDto) {
-    this.counterId = this.counterId + 1;
-    const newUser = {
-      id: this.counterId,
-      ...data,
-    };
-    this.users.push(newUser);
-    return newUser;
+    return;
   }
 
-  update(id: number, changes: UpdateUserDto) {
-    const user = this.findOne(id);
-    const index = this.users.findIndex((item) => item.id === id);
-    this.users[index] = {
-      ...user,
-      ...changes,
-    };
-    return this.users[index];
+  update(id: string, changes: UpdateUserDto) {
+    return;
   }
 
-  remove(id: number) {
-    const index = this.users.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`User #${id} not found`);
-    }
-    this.users.splice(index, 1);
+  remove(id: string) {
     return true;
   }
 
-  getOrderByUser(userId: number): Order {
-    const user = this.findOne(userId);
-
-    return {
-      date: new Date(),
-      user,
-      products: this.productsService.findAll(),
-    };
+  async getOrderByUser(userId: string) {
+    // return {
+    //   date: new Date(),
+    //   user,
+    //   products: await this.productsService.findAll(),
+    // };
   }
 }
