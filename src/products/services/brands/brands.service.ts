@@ -22,14 +22,33 @@ export class BrandsService {
   }
 
   create(data: CreateBrandDto) {
-    return;
+    const newBrand = new this.brandModel(data);
+    return newBrand.save();
   }
 
-  update(id: string, changes: UpdateBrandDto) {
-    return;
+  async update(id: string, changes: UpdateBrandDto) {
+    const brand = await this.brandModel.findByIdAndUpdate(
+      id,
+      {
+        $set: changes,
+      },
+      { new: true },
+    );
+
+    if (!brand) {
+      throw new NotFoundException('Brand not Found');
+    }
+
+    return brand;
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const brand = await this.brandModel.findByIdAndDelete(id);
+
+    if (!brand) {
+      throw new NotFoundException('Brand not Found');
+    }
+
     return true;
   }
 }

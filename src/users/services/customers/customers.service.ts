@@ -23,14 +23,38 @@ export class CustomersService {
   }
 
   create(data: CreateCustomerDto) {
-    return;
+    const newCustomer = new this.customerModel(data);
+    return newCustomer.save();
   }
 
-  update(id: string, changes: UpdateCustomerDto) {
-    return;
+  async update(id: string, changes: UpdateCustomerDto) {
+    const customer = await this.customerModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: changes, // hace un merge
+        },
+        {
+          // muestra la nueva version del customer
+          new: true,
+        },
+      )
+      .exec();
+
+    if (!customer) {
+      throw new NotFoundException('customer not Found');
+    }
+
+    return customer;
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const customer = await this.customerModel.findByIdAndDelete(id);
+
+    if (!customer) {
+      throw new NotFoundException('customer not Found');
+    }
+
     return true;
   }
 }

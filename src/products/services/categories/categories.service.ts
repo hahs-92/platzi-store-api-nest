@@ -8,16 +8,14 @@ import { Category } from '../../entities/category.entity';
 
 @Injectable()
 export class CategoriesService {
-  constructor(
-    @InjectModel(Category.name) private ctgServices: Model<Category>,
-  ) {}
+  constructor(@InjectModel(Category.name) private ctgModel: Model<Category>) {}
 
   findAll() {
-    return this.ctgServices.find().exec();
+    return this.ctgModel.find().exec();
   }
 
   async findOne(id: string) {
-    const category = await this.ctgServices.findById(id).exec();
+    const category = await this.ctgModel.findById(id).exec();
     if (!category) {
       throw new NotFoundException(`Category #${id} not found`);
     }
@@ -25,14 +23,38 @@ export class CategoriesService {
   }
 
   create(data: CreateCategoryDto) {
-    return;
+    const newCtg = new this.ctgModel(data);
+    return newCtg.save();
   }
 
-  update(id: string, changes: UpdateCategoryDto) {
-    return;
+  async update(id: string, changes: UpdateCategoryDto) {
+    const ctg = await this.ctgModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: changes, // hace un merge
+        },
+        {
+          // muestra la nueva version del ctg
+          new: true,
+        },
+      )
+      .exec();
+
+    if (!ctg) {
+      throw new NotFoundException('ctg not Found');
+    }
+
+    return ctg;
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const ctg = await this.ctgModel.findByIdAndDelete(id);
+
+    if (!ctg) {
+      throw new NotFoundException('ctg not Found');
+    }
+
     return true;
   }
 }

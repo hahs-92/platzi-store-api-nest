@@ -33,14 +33,38 @@ export class UsersService {
   }
 
   create(data: CreateUserDto) {
-    return;
+    const newUser = new this.userModel(data);
+    return newUser.save();
   }
 
-  update(id: string, changes: UpdateUserDto) {
-    return;
+  async update(id: string, changes: UpdateUserDto) {
+    const user = await this.userModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: changes, // hace un merge
+        },
+        {
+          // muestra la nueva version del user
+          new: true,
+        },
+      )
+      .exec();
+
+    if (!user) {
+      throw new NotFoundException('user not Found');
+    }
+
+    return user;
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const user = await this.userModel.findByIdAndDelete(id);
+
+    if (!user) {
+      throw new NotFoundException('user not Found');
+    }
+
     return true;
   }
 
