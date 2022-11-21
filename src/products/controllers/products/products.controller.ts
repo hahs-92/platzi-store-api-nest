@@ -38,8 +38,8 @@ export class ProductsController {
   }
 
   @Post()
-  create(@Res() res: Response, @Body() payload: CreateProductDTO) {
-    return res.send(this.productsService.create(payload));
+  create(@Body() payload: CreateProductDTO) {
+    return this.productsService.create(payload);
   }
 
   @Put(':id')

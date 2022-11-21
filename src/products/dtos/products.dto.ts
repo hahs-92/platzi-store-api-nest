@@ -24,26 +24,27 @@ export class CreateProductDTO {
   @IsNotEmpty()
   readonly name: string;
 
+  @ApiProperty()
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
   readonly price: number;
 
+  @ApiProperty()
   @IsNumber()
   @IsPositive()
   @IsNotEmpty()
   readonly stock: number;
 
+  @ApiProperty()
   @IsOptional()
   @IsString()
   readonly description?: string;
 
+  @ApiProperty()
   @IsOptional()
   @IsUrl()
   readonly image?: string;
 }
 
-export class UdpateProductDTO extends PartialType(CreateProductDTO) {
-  @IsString()
-  id?: string;
-}
+export class UdpateProductDTO extends PartialType(CreateProductDTO) {}

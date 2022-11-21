@@ -27,15 +27,39 @@ export class ProductsService {
     return product;
   }
 
-  create(product: CreateProductDTO) {
-    return;
+  async create(payload: CreateProductDTO) {
+    const newProduct = new this.productModel(payload);
+    return newProduct.save();
   }
 
-  update(id: string, product: UdpateProductDTO) {
-    return;
+  async update(id: string, changes: UdpateProductDTO) {
+    const product = await this.productModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: changes, // hace un merge
+        },
+        {
+          // muestra la nueva version del product
+          new: true,
+        },
+      )
+      .exec();
+
+    if (!product) {
+      throw new NotFoundException('Product not Found');
+    }
+
+    return product;
   }
 
-  delete(id: string) {
+  async delete(id: string) {
+    const product = await this.productModel.findByIdAndDelete(id);
+
+    if (!product) {
+      throw new NotFoundException('Product not Found');
+    }
+
     return true;
   }
 }
