@@ -9,6 +9,7 @@ import {
   IsOptional,
   IsPositive,
   Min,
+  ValidateIf,
 } from 'class-validator';
 
 // import { PartialType } from '@nestjs/mapped-types';
@@ -59,4 +60,13 @@ export class FilterProduct {
   @IsOptional()
   @Min(0)
   offset?: number;
+
+  @IsOptional()
+  @Min(0)
+  minPrice?: number;
+
+  // es obligatorio si existe minPrice
+  @ValidateIf((params) => params.minPrice)
+  @IsPositive()
+  maxPrice?: number;
 }
