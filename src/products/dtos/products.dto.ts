@@ -10,12 +10,13 @@ import {
   IsPositive,
   Min,
   ValidateIf,
+  ValidateNested,
 } from 'class-validator';
 
 // import { PartialType } from '@nestjs/mapped-types';
 // PARA USAR SWAGGER SE DEBE UTILIZAR ESTE IMPORT
 import { PartialType, ApiProperty } from '@nestjs/swagger';
-import { mixin } from '@nestjs/common';
+import { CreateCategoryDto } from './category.dto';
 
 // ESTAS DOS LIBRERIAS SE DEBEN DESCARGAR POR SEPARADO DE NEST
 
@@ -48,6 +49,11 @@ export class CreateProductDTO {
   @IsOptional()
   @IsUrl()
   readonly image?: string;
+
+  @ApiProperty()
+  @ValidateNested() // utilizamos el dto de ctg, y lo evalua en cascada, unimos dos dtos
+  @IsNotEmpty()
+  readonly category: CreateCategoryDto;
 }
 
 export class UdpateProductDTO extends PartialType(CreateProductDTO) {}
@@ -55,18 +61,18 @@ export class UdpateProductDTO extends PartialType(CreateProductDTO) {}
 export class FilterProduct {
   @IsOptional()
   @IsPositive()
-  limit?: number;
+  readonly limit?: number;
 
   @IsOptional()
   @Min(0)
-  offset?: number;
+  readonly offset?: number;
 
   @IsOptional()
   @Min(0)
-  minPrice?: number;
+  readonly minPrice?: number;
 
   // es obligatorio si existe minPrice
   @ValidateIf((params) => params.minPrice)
   @IsPositive()
-  maxPrice?: number;
+  readonly maxPrice?: number;
 }
