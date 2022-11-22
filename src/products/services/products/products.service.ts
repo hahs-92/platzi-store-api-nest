@@ -36,7 +36,10 @@ export class ProductsService {
   }
 
   async findOne(id: string) {
-    const product = await this.productModel.findById(id).exec();
+    const product = await this.productModel
+      .findOne({ _id: id }) // utilizamos findOne para usar populate
+      .populate('brand') // para que nos traiga la info de brand y no solo el id
+      .exec();
 
     if (!product) {
       // return null;

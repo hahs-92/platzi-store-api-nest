@@ -11,6 +11,7 @@ import {
   Min,
   ValidateIf,
   ValidateNested,
+  IsMongoId,
 } from 'class-validator';
 
 // import { PartialType } from '@nestjs/mapped-types';
@@ -54,6 +55,10 @@ export class CreateProductDTO {
   @ValidateNested() // utilizamos el dto de ctg, y lo evalua en cascada, unimos dos dtos
   @IsNotEmpty()
   readonly category: CreateCategoryDto;
+
+  @ApiProperty()
+  @IsMongoId()
+  readonly brand: string;
 }
 
 export class UdpateProductDTO extends PartialType(CreateProductDTO) {}
