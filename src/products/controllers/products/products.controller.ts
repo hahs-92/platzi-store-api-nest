@@ -13,7 +13,11 @@ import { Response } from 'express';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 import { ProductsService } from '../../services/products/products.service';
-import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
+import {
+  CreateProductDTO,
+  UdpateProductDTO,
+  FilterProduct,
+} from '../../dtos/products.dto';
 import { MongoIdPipe } from '../../../shared/mongo-id/mongo-id.pipe';
 
 @ApiTags('products')
@@ -24,11 +28,14 @@ export class ProductsController {
   @Get()
   @ApiOperation({ summary: 'List of the products' })
   getProducts(
-    @Query('limit') limit = 20,
-    @Query('offset') offset = 0,
-    @Query('brand') brand?: string,
+    // en el main activamos la convercion
+    // para que los parametros sean numbers
+    @Query() params: FilterProduct,
+    // @Query('limit') limit = 20,
+    // @Query('offset') offset = 0,
+    // @Query('brand') brand?: string,
   ) {
-    return this.productsService.findAll();
+    return this.productsService.findAll(params);
   }
 
   // ! las routas que no sean dinamicas deben ir primero

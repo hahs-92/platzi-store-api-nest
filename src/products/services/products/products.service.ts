@@ -4,7 +4,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { ProductEntity } from '../../entities/product.entity';
-import { CreateProductDTO, UdpateProductDTO } from '../../dtos/products.dto';
+import {
+  CreateProductDTO,
+  UdpateProductDTO,
+  FilterProduct,
+} from '../../dtos/products.dto';
 
 @Injectable()
 export class ProductsService {
@@ -12,7 +16,15 @@ export class ProductsService {
     @InjectModel(ProductEntity.name) private productModel: Model<ProductEntity>,
   ) {}
 
-  findAll() {
+  findAll(params?: FilterProduct) {
+    if (params) {
+      const { limit, offset } = params;
+      return this.productModel
+        .find()
+        .skip(offset * limit)
+        .limit(limit)
+        .exec();
+    }
     return this.productModel.find().exec();
   }
 

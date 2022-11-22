@@ -16,6 +16,12 @@ async function bootstrap() {
       // EVITAR ENVIAR MENSAGES AL CLIENTE
       // disableErrorMessages:
       //   process.env.ENVIROMENT === 'production' ? true : false,
+
+      transformOptions: {
+        // para que convierta los string a numbers
+        // lo utilizamos en getProducts ,(params)
+        enableImplicitConversion: true,
+      },
     }),
   );
 

@@ -8,11 +8,13 @@ import {
   IsNotEmpty,
   IsOptional,
   IsPositive,
+  Min,
 } from 'class-validator';
 
 // import { PartialType } from '@nestjs/mapped-types';
 // PARA USAR SWAGGER SE DEBE UTILIZAR ESTE IMPORT
 import { PartialType, ApiProperty } from '@nestjs/swagger';
+import { mixin } from '@nestjs/common';
 
 // ESTAS DOS LIBRERIAS SE DEBEN DESCARGAR POR SEPARADO DE NEST
 
@@ -48,3 +50,13 @@ export class CreateProductDTO {
 }
 
 export class UdpateProductDTO extends PartialType(CreateProductDTO) {}
+
+export class FilterProduct {
+  @IsOptional()
+  @IsPositive()
+  limit?: number;
+
+  @IsOptional()
+  @Min(0)
+  offset?: number;
+}
