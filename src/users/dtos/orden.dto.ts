@@ -22,3 +22,9 @@ export class UpdateOrderDto extends PartialType(
   // en el dto, y en la entidad su tipo es Products[]
   OmitType(CreateOrderDto, ['products']),
 ) {}
+
+export class AddProductsToOrderDto {
+  @IsArray()
+  @IsNotEmpty()
+  readonly productsIds: string[];
+}

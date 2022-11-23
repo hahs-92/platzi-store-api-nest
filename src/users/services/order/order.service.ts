@@ -35,4 +35,21 @@ export class OrderService {
   remove(id: string) {
     return this.orderModel.findByIdAndDelete(id);
   }
+
+  // remover un producto en un array referenciado
+  async removeProduct(id: string, productId: string) {
+    const order = await this.orderModel.findById(id);
+    order.products.pull(productId);
+
+    return order.save();
+  }
+
+  // falto hacer validacion de que no se ingresen ids repetidos
+  async addProducts(id: string, productsIds: string[]) {
+    const order = await this.orderModel.findById(id);
+
+    productsIds.forEach((pId) => order.products.push(pId));
+
+    return order.save();
+  }
 }
