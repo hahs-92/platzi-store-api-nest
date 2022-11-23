@@ -1,34 +1,43 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   Param,
   Post,
+  Body,
   Put,
-  Res,
+  Delete,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { ApiTags } from '@nestjs/swagger';
+import { OrderService } from '../../services/order/order.service';
+import { UpdateOrderDto, CreateOrderDto } from '../../dtos/orden.dto';
 
+@ApiTags('orders')
 @Controller('orders')
 export class OrdersController {
+  constructor(private ordersService: OrderService) {}
+
   @Get()
-  getOrders(): string {
-    return 'Orders';
+  findAll() {
+    return this.ordersService.findAll();
+  }
+
+  @Get(':id')
+  get(@Param('id') id: string) {
+    return this.ordersService.findOne(id);
   }
 
   @Post()
-  create(@Body() payload: unknown, @Res() res: Response) {
-    return res.send({ message: payload });
+  create(@Body() payload: CreateOrderDto) {
+    return this.ordersService.create(payload);
   }
 
   @Put(':id')
-  update(@Body() payload: any, @Param('id') id: string, @Res() res: Response) {
-    return res.send({ message: `${payload.name} id: ${id}` });
+  update(@Param('id') id: string, @Body() payload: UpdateOrderDto) {
+    return this.ordersService.update(id, payload);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @Res() res: Response) {
-    return res.send(id);
+  remove(@Param('id') id: string) {
+    return this.ordersService.remove(id);
   }
 }

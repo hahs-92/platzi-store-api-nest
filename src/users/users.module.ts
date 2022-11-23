@@ -12,17 +12,20 @@ import { UsersService } from './services/users/users.service';
 
 import { User, userSchema } from './entities/user.entity';
 import { Customer, customerSchema } from './entities/customer.entity';
+import { OrderService } from './services/order/order.service';
+import { Order, OrderSchema } from './entities/order.entity';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: userSchema },
       { name: Customer.name, schema: customerSchema },
+      { name: Order.name, schema: OrderSchema },
     ]),
 
     ProductsModule,
   ],
-  controllers: [UsersController, OrdersController, CustomersController],
-  providers: [CustomersService, UsersService],
+  controllers: [UsersController, CustomersController, OrdersController],
+  providers: [CustomersService, UsersService, OrderService],
 })
 export class UsersModule {}
